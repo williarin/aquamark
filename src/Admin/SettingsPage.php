@@ -67,6 +67,7 @@ final class SettingsPage
         add_settings_field('opacity', __('Opacity', 'free-watermarks'), [$this, 'renderOpacityField'], 'free-watermarks', 'free_watermarks_general');
         add_settings_field('blendMode', __('Blend Mode', 'free-watermarks'), [$this, 'renderBlendModeField'], 'free-watermarks', 'free_watermarks_general');
         add_settings_field('imageSizes', __('Apply to Image Sizes', 'free-watermarks'), [$this, 'renderImageSizesField'], 'free-watermarks', 'free_watermarks_general');
+        add_settings_field('driver', __('Image Processing Driver', 'free-watermarks'), [$this, 'renderDriverField'], 'free-watermarks', 'free_watermarks_general');
     }
 
     public function sanitize(array $input): array
@@ -167,8 +168,8 @@ final class SettingsPage
 
     public function renderBlendModeField(): void
     {
-        $blendMode = $this->options['blendMode'] ?? 'normal';
-        $modes = ['normal', 'multiply', 'screen', 'overlay'];
+        $blendMode = $this->options['blendMode'] ?? 'opacity';
+        $modes = ['opacity', 'multiply', 'screen', 'overlay'];
         ?>
         <select name="<?php echo esc_attr(self::OPTION_NAME); ?>[blendMode]">
             <?php foreach ($modes as $mode): ?>
@@ -181,15 +182,35 @@ final class SettingsPage
 
     public function renderImageSizesField(): void
     {
+        global $_wp_additional_image_sizes;
+
         $appliedSizes = $this->options['imageSizes'] ?? [];
         $availableSizes = get_intermediate_image_sizes();
         $availableSizes[] = 'full';
         ?>
         <fieldset>
-            <?php foreach ($availableSizes as $size): ?>
+            <?php foreach ($availableSizes as $size):
+                $dimensions = '';
+                if ($size !== 'full') {
+                    $width = 0;
+                    $height = 0;
+
+                    if (in_array($size, ['thumbnail', 'medium', 'medium_large', 'large'])) {
+                        $width = (int) get_option($size . '_size_w');
+                        $height = (int) get_option($size . '_size_h');
+                    } elseif (isset($_wp_additional_image_sizes[$size])) {
+                        $width = $_wp_additional_image_sizes[$size]['width'];
+                        $height = $_wp_additional_image_sizes[$size]['height'];
+                    }
+
+                    if ($width > 0 || $height > 0) {
+                        $dimensions = sprintf(' (%dx%d)', $width, $height);
+                    }
+                }
+                ?>
                 <label>
                     <input type="checkbox" name="<?php echo esc_attr(self::OPTION_NAME); ?>[imageSizes][]" value="<?php echo esc_attr($size); ?>" <?php checked(in_array($size, $appliedSizes, true)); ?>>
-                    <?php echo esc_html($size); ?>
+                    <?php echo esc_html($size); ?><?php echo $dimensions; ?>
                     <?php if ('full' === $size): ?>
                         <em style="color: red;">(<?php _e('Warning: Applying to full size is destructive and cannot be easily undone.', 'free-watermarks'); ?>)</em>
                     <?php endif; ?>
@@ -197,6 +218,41 @@ final class SettingsPage
             <?php endforeach; ?>
         </fieldset>
         <?php
+    }
+
+    public function renderDriverField(): void
+    {
+        $isImagickAvailable = extension_loaded('imagick') || class_exists('Imagick');
+        $isGdAvailable = extension_loaded('gd') || function_exists('gd_info');
+        $currentDriver = $this->options['driver'] ?? 'auto';
+
+        if ($isImagickAvailable && $isGdAvailable) {
+            ?>
+            <select name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]">
+                <option value="auto" <?php selected('auto', $currentDriver); ?>><?php _e('Auto (Recommended)', 'free-watermarks'); ?></option>
+                <option value="imagick" <?php selected('imagick', $currentDriver); ?>><?php _e('Imagick (High Quality)', 'free-watermarks'); ?></option>
+                <option value="gd" <?php selected('gd', $currentDriver); ?>><?php _e('GD (Compatibility)', 'free-watermarks'); ?></option>
+            </select>
+            <p class="description"><?php _e('Choose the image processing library. Auto will use Imagick if available.', 'free-watermarks'); ?></p>
+            <?php
+        } elseif ($isImagickAvailable) {
+            ?>
+            <p><strong><?php _e('Imagick', 'free-watermarks'); ?></strong></p>
+            <p class="description"><?php _e('Your server is using the Imagick library for high-quality image processing.', 'free-watermarks'); ?></p>
+            <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]" value="auto">
+            <?php
+        } elseif ($isGdAvailable) {
+            ?>
+            <p><strong><?php _e('GD', 'free-watermarks'); ?></strong></p>
+            <p class="description"><?php _e('Your server is using the GD library. For higher quality, consider installing the Imagick extension.', 'free-watermarks'); ?></p>
+            <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]" value="auto">
+            <?php
+        } else {
+            ?>
+            <p style="color: red;"><strong><?php _e('No compatible image processing library found!', 'free-watermarks'); ?></strong></p>
+            <p class="description"><?php _e('This plugin requires either the GD or Imagick PHP extension to be installed.', 'free-watermarks'); ?></p>
+            <?php
+        }
     }
 
     public function renderPage(): void

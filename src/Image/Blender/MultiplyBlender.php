@@ -17,52 +17,60 @@ final class MultiplyBlender implements BlenderInterface
 
     public function blend(ImageInterface $image, ImageInterface $watermark, Point $start, int $opacity = 100): void
     {
-        if (!$image instanceof GdImage || !$watermark instanceof GdImage) {
-            throw new \LogicException(sprintf(
-                'The %s currently only supports the GD driver.',
-                self::class
-            ));
-        }
+        if ($image instanceof \Imagine\Imagick\Image && $watermark instanceof \Imagine\Imagick\Image) {
+            $imagick = $image->getImagick();
+            $watermarkImagick = $watermark->getImagick();
 
-        $baseResource = $image->getGdResource();
-        $watermarkResource = $watermark->getGdResource();
+            $watermarkImagick->setImageAlphaChannel(\Imagick::ALPHACHANNEL_ACTIVATE);
 
-        $width = $watermark->getSize()->getWidth();
-        $height = $watermark->getSize()->getHeight();
-        $startX = $start->getX();
-        $startY = $start->getY();
-
-        // This is a pixel-by-pixel implementation of the multiply blend mode.
-        // It can be slow on large images.
-        for ($x = 0; $x < $width; $x++) {
-            for ($y = 0; $y < $height; $y++) {
-                $baseRgb = imagecolorat($baseResource, $startX + $x, $startY + $y);
-                $baseRed = ($baseRgb >> 16) & 0xFF;
-                $baseGreen = ($baseRgb >> 8) & 0xFF;
-                $baseBlue = $baseRgb & 0xFF;
-
-                $watermarkRgb = imagecolorat($watermarkResource, $x, $y);
-                $watermarkRed = ($watermarkRgb >> 16) & 0xFF;
-                $watermarkGreen = ($watermarkRgb >> 8) & 0xFF;
-                $watermarkBlue = $watermarkRgb & 0xFF;
-                $watermarkAlpha = ($watermarkRgb >> 24) & 0x7F;
-
-                // Multiply formula
-                $newRed = (int) (($baseRed * $watermarkRed) / 255);
-                $newGreen = (int) (($baseGreen * $watermarkGreen) / 255);
-                $newBlue = (int) (($baseBlue * $watermarkBlue) / 255);
-
-                // Alpha blending with opacity
-                $alpha = $watermarkAlpha / 127;
-                // Apply the opacity setting
-                $alpha = $alpha * ($opacity / 100);
-                $finalRed = (int) ($newRed * (1 - $alpha) + $baseRed * $alpha);
-                $finalGreen = (int) ($newGreen * (1 - $alpha) + $baseGreen * $alpha);
-                $finalBlue = (int) ($newBlue * (1 - $alpha) + $baseBlue * $alpha);
-
-                $newColor = imagecolorallocate($baseResource, $finalRed, $finalGreen, $finalBlue);
-                imagesetpixel($baseResource, $startX + $x, $startY + $y, $newColor);
+            if ($opacity < 100) {
+                $watermarkImagick->evaluateImage(\Imagick::EVALUATE_MULTIPLY, $opacity / 100, \Imagick::CHANNEL_ALPHA);
             }
+
+            $imagick->compositeImage($watermarkImagick, \Imagick::COMPOSITE_MULTIPLY, $start->getX(), $start->getY());
+        } elseif ($image instanceof GdImage && $watermark instanceof GdImage) {
+            $baseResource = $image->getGdResource();
+            $watermarkResource = $watermark->getGdResource();
+
+            $width = $watermark->getSize()->getWidth();
+            $height = $watermark->getSize()->getHeight();
+            $startX = $start->getX();
+            $startY = $start->getY();
+
+            // This is a pixel-by-pixel implementation of the multiply blend mode.
+            // It can be slow on large images.
+            for ($x = 0; $x < $width; $x++) {
+                for ($y = 0; $y < $height; $y++) {
+                    $baseRgb = imagecolorat($baseResource, $startX + $x, $startY + $y);
+                    $baseRed = ($baseRgb >> 16) & 0xFF;
+                    $baseGreen = ($baseRgb >> 8) & 0xFF;
+                    $baseBlue = $baseRgb & 0xFF;
+
+                    $watermarkRgb = imagecolorat($watermarkResource, $x, $y);
+                    $watermarkRed = ($watermarkRgb >> 16) & 0xFF;
+                    $watermarkGreen = ($watermarkRgb >> 8) & 0xFF;
+                    $watermarkBlue = $watermarkRgb & 0xFF;
+                    $watermarkAlpha = ($watermarkRgb >> 24) & 0x7F;
+
+                    // Multiply formula
+                    $newRed = (int) (($baseRed * $watermarkRed) / 255);
+                    $newGreen = (int) (($baseGreen * $watermarkGreen) / 255);
+                    $newBlue = (int) (($baseBlue * $watermarkBlue) / 255);
+
+                    // Alpha blending with opacity
+                    $alpha = $watermarkAlpha / 127;
+                    // Apply the opacity setting
+                    $alpha = $alpha * ($opacity / 100);
+                    $finalRed = (int) ($newRed * (1 - $alpha) + $baseRed * $alpha);
+                    $finalGreen = (int) ($newGreen * (1 - $alpha) + $baseGreen * $alpha);
+                    $finalBlue = (int) ($newBlue * (1 - $alpha) + $baseBlue * $alpha);
+
+                    $newColor = imagecolorallocate($baseResource, $finalRed, $finalGreen, $finalBlue);
+                    imagesetpixel($baseResource, $startX + $x, $startY + $y, $newColor);
+                }
+            }
+        } else {
+            throw new \LogicException('Unsupported image driver combination.');
         }
     }
 }

@@ -19,6 +19,7 @@ final readonly class Settings
     public int $opacity;
     public string $blendMode;
     public array $imageSizes;
+    public string $driver;
 
     public function __construct(array $options)
     {
@@ -48,8 +49,9 @@ final readonly class Settings
             'height' => 0, // 0 means auto
             'sizeUnit' => 'px',
             'opacity' => 80,
-            'blendMode' => 'normal',
+            'blendMode' => 'opacity',
             'imageSizes' => [],
+            'driver' => 'auto',
         ])
             ->setAllowedTypes('watermarkImageId', 'int')
             ->setAllowedTypes('position', 'string')
@@ -62,6 +64,7 @@ final readonly class Settings
             ->setAllowedTypes('opacity', 'int')
             ->setAllowedTypes('blendMode', 'string')
             ->setAllowedTypes('imageSizes', 'array')
+            ->setAllowedTypes('driver', 'string')
             ->setAllowedValues('position', [
                 'top-left', 'top-center', 'top-right',
                 'middle-left', 'middle-center', 'middle-right',
@@ -69,7 +72,8 @@ final readonly class Settings
             ])
             ->setAllowedValues('offsetUnit', ['px', '%'])
             ->setAllowedValues('sizeUnit', ['px', '%'])
-            ->setAllowedValues('blendMode', ['normal', 'multiply', 'screen', 'overlay'])
-            ->setAllowedValues('opacity', range(0, 100));
+            ->setAllowedValues('blendMode', ['opacity', 'multiply', 'screen', 'overlay'])
+            ->setAllowedValues('opacity', range(0, 100))
+            ->setAllowedValues('driver', ['auto', 'imagick', 'gd']);
     }
 }

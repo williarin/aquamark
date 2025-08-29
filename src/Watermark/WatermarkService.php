@@ -145,7 +145,7 @@ final class WatermarkService
             $newWidth = (int) ($newHeight * $watermarkRatio);
         }
 
-        return $watermark->copy()->resize(new Box($newWidth, $newHeight));
+        return $watermark->copy()->resize(new Box($newWidth, $newHeight), ImageInterface::FILTER_LANCZOS);
     }
 
     private function calculatePosition(ImageInterface $image, ImageInterface $watermark, Settings $settings): Point
