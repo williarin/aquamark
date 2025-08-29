@@ -1,0 +1,13 @@
+# Composer
+/vendor/
+composer.lock
+
+# Build artifacts
+/build/
+*.zip
+*.tar.gz
+
+# IDEs and OS files
+.DS_Store
+.idea/
+*.log
