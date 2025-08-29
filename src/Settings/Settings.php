@@ -31,6 +31,11 @@ final readonly class Settings
         }
     }
 
+    public function toArray(): array
+    {
+        return get_object_vars($this);
+    }
+
     private function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

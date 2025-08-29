@@ -23,11 +23,10 @@ update:
 	composer update
 
 build: clean
-	@echo "--> Scoping the plugin..."
-	composer scope
 	@echo "--> Preparing build directory..."
-	cp composer.json $(BUILD_DIR)/composer.json
+	mkdir -p $(BUILD_DIR)
 	@echo "--> Installing production dependencies in build directory..."
+	cp -r assets src config composer.json free-watermarks.php $(BUILD_DIR)/
 	cd $(BUILD_DIR) && composer install --no-dev --optimize-autoloader
 	@echo "--> Creating production zip file: $(ZIP_FILE)..."
 	cd $(BUILD_DIR) && zip -r ../$(ZIP_FILE) .

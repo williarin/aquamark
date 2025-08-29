@@ -7,6 +7,8 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\ImagineInterface;
 use Plugin\Admin\SettingsPage;
+use Plugin\Watermark\RegenerateService;
+use Plugin\Watermark\WatermarkService;
 
 return static function (ContainerConfigurator $container): void {
     $services = $container->services()
@@ -21,8 +23,9 @@ return static function (ContainerConfigurator $container): void {
     $services->set('imagine', GdImagine::class);
 
     $services->get(SettingsPage::class)
-        ->arg('$pluginFile', '%plugin.file%');
+        ->arg('$pluginFile', '%plugin.file%')
+        ->public();
 
-    $container->parameters()
-        ->set('plugin.file', '');
+    $services->get(WatermarkService::class)->public();
+    $services->get(RegenerateService::class)->public();
 };

@@ -29,7 +29,8 @@ final class SettingsPage
             return;
         }
 
-        $scriptUrl = plugins_url('assets/js/admin.js', $this->pluginFile);
+        $scriptUrl = plugin_dir_url($this->pluginFile) . 'assets/js/admin.js';
+        
         wp_enqueue_script('free-watermarks-admin', $scriptUrl, ['jquery', 'media-upload', 'thickbox'], '1.0.0', true);
         wp_enqueue_media();
     }
@@ -49,7 +50,7 @@ final class SettingsPage
     {
         register_setting('free-watermarks', self::OPTION_NAME, [
             'sanitize_callback' => [$this, 'sanitize'],
-            'default' => (new Settings([]))->__serialize(),
+            'default' => (new Settings([]))->toArray(),
         ]);
 
         add_settings_section(
@@ -70,8 +71,15 @@ final class SettingsPage
 
     public function sanitize(array $input): array
     {
+        $input['watermarkImageId'] = isset($input['watermarkImageId']) ? (int) $input['watermarkImageId'] : 0;
+        $input['offsetX'] = isset($input['offsetX']) ? (int) $input['offsetX'] : 0;
+        $input['offsetY'] = isset($input['offsetY']) ? (int) $input['offsetY'] : 0;
+        $input['width'] = isset($input['width']) ? (int) $input['width'] : 0;
+        $input['height'] = isset($input['height']) ? (int) $input['height'] : 0;
+        $input['opacity'] = isset($input['opacity']) ? (int) $input['opacity'] : 0;
+
         $settings = new Settings($input);
-        return $settings->__serialize();
+        return $settings->toArray();
     }
 
     public function renderSectionHeader(): void
