@@ -15,6 +15,10 @@ class RegenerateServiceTest extends TestCase
         // Reset WP_Mock before each test
         \WP_Mock::tearDown();
         \WP_Mock::setUp();
+        
+        // Mock is_admin to return true for testing
+        \WP_Mock::userFunction('is_admin')
+            ->andReturn(true);
     }
 
     protected function tearDown(): void
@@ -49,6 +53,13 @@ class RegenerateServiceTest extends TestCase
 
     public function testHandleBulkActionRegeneratesImages(): void
     {
+        \WP_Mock::userFunction('is_admin')
+            ->andReturn(true);
+            
+        \WP_Mock::userFunction('check_admin_referer')
+            ->with('bulk-posts')
+            ->andReturn(true);
+
         \WP_Mock::userFunction('wp_attachment_is_image')
             ->andReturnUsing(function($id) {
                 // Return true for IDs 1 and 3, false for ID 2
@@ -92,13 +103,80 @@ class RegenerateServiceTest extends TestCase
     {
         $_REQUEST['regenerated'] = 5;
 
+        // Mock WordPress functions used in displayAdminNotice
+        \WP_Mock::userFunction('is_admin')
+            ->andReturn(true);
+            
+        \WP_Mock::userFunction('_n')
+            ->andReturnUsing(function($single, $plural, $number, $domain) {
+                return $number == 1 ? $single : $plural;
+            });
+            
+        \WP_Mock::userFunction('number_format_i18n')
+            ->andReturnUsing(function($number) {
+                return (string)$number;
+            });
+            
+        \WP_Mock::userFunction('esc_html')
+            ->andReturnUsing(function($text) {
+                return $text;
+            });
+
         // _n and printf are internal PHP functions, not mocked by WP_Mock
-        // We will assert the output directly
-        $this->expectOutputString('<div class="notice notice-success is-dismissible"><p>5 image had its watermark regenerated.</p></div>');
+        // We will assert the output directly - note the plural form since 5 != 1
+        $this->expectOutputString('<div class="notice notice-success is-dismissible"><p>5 images had their watermarks regenerated.</p></div>');
 
         $service = new RegenerateService();
         $service->displayAdminNotice();
 
         unset($_REQUEST['regenerated']);
+    }
+    
+    public function testDisplayAdminNoticeWithNonce(): void
+    {
+        $_REQUEST['regenerated'] = 5;
+        $_REQUEST['_wpnonce'] = 'valid_nonce';
+
+        // Mock WordPress functions used in displayAdminNotice
+        \WP_Mock::userFunction('is_admin')
+            ->andReturn(true);
+            
+        \WP_Mock::userFunction('wp_verify_nonce')
+            ->with('valid_nonce', 'bulk-posts')
+            ->andReturn(true);
+            
+        \WP_Mock::userFunction('sanitize_text_field')
+            ->andReturnUsing(function($value) {
+                return $value;
+            });
+            
+        \WP_Mock::userFunction('wp_unslash')
+            ->andReturnUsing(function($value) {
+                return $value;
+            });
+            
+        \WP_Mock::userFunction('_n')
+            ->andReturnUsing(function($single, $plural, $number, $domain) {
+                return $number == 1 ? $single : $plural;
+            });
+            
+        \WP_Mock::userFunction('number_format_i18n')
+            ->andReturnUsing(function($number) {
+                return (string)$number;
+            });
+            
+        \WP_Mock::userFunction('esc_html')
+            ->andReturnUsing(function($text) {
+                return $text;
+            });
+
+        // _n and printf are internal PHP functions, not mocked by WP_Mock
+        // We will assert the output directly - note the plural form since 5 != 1
+        $this->expectOutputString('<div class="notice notice-success is-dismissible"><p>5 images had their watermarks regenerated.</p></div>');
+
+        $service = new RegenerateService();
+        $service->displayAdminNotice();
+
+        unset($_REQUEST['regenerated'], $_REQUEST['_wpnonce']);
     }
 }
