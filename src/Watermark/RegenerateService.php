@@ -25,6 +25,8 @@ final class RegenerateService
             return $redirectTo;
         }
 
+        check_admin_referer('bulk-posts');
+
         // Removed: require_once ABSPATH . 'wp-admin/includes/image.php';
 
         $regeneratedCount = 0;
@@ -43,16 +45,21 @@ final class RegenerateService
 
     public function displayAdminNotice(): void
     {
-        if (!empty($_REQUEST['regenerated'])) {
-            $count = (int) $_REQUEST['regenerated'];
+        if (!empty($_REQUEST['regenerated']) && isset($_REQUEST['_wpnonce'])) {
+            if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])), 'bulk-posts')) {
+                return;
+            }
+            
+            $count = absint($_REQUEST['regenerated']);
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                sprintf(_n(
+                /* translators: %s: number of images */
+                esc_html(sprintf(_n(
                     '%d image had its watermark regenerated.',
                     '%d images had their watermarks regenerated.',
                     $count,
                     'free-watermarks'
-                ), $count)
+                ), number_format_i18n($count)))
             );
         }
     }

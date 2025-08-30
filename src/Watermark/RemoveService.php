@@ -30,6 +30,8 @@ final class RemoveService
             return $redirectTo;
         }
 
+        check_admin_referer('bulk-posts');
+
         remove_filter('wp_generate_attachment_metadata', [$this->watermarkService, 'applyWatermark'], 10);
 
         $removedCount = 0;
@@ -50,16 +52,21 @@ final class RemoveService
 
     public function displayAdminNotice(): void
     {
-        if (!empty($_REQUEST['removed'])) {
-            $count = (int) $_REQUEST['removed'];
+        if (!empty($_REQUEST['removed']) && isset($_REQUEST['_wpnonce'])) {
+            if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['_wpnonce'])), 'bulk-posts')) {
+                return;
+            }
+            
+            $count = absint($_REQUEST['removed']);
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                sprintf(_n(
+                /* translators: %s: number of images */
+                esc_html(sprintf(_n(
                     '%d image had its watermark removed.',
                     '%d images had their watermarks removed.',
                     $count,
                     'free-watermarks'
-                ), $count)
+                ), number_format_i18n($count)))
             );
         }
     }

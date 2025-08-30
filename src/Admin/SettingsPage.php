@@ -106,7 +106,7 @@ final class SettingsPage
 
     public function renderSectionHeader(): void
     {
-        echo '<p>' . __('Configure the appearance and placement of the watermark.', 'free-watermarks') . '</p>';
+        echo '<p>' . esc_html__('Configure the appearance and placement of the watermark.', 'free-watermarks') . '</p>';
     }
 
     public function renderWatermarkImageField(): void
@@ -121,10 +121,10 @@ final class SettingsPage
         </div>
         <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[watermarkImageId]" value="<?php echo esc_attr($imageId); ?>">
         <button type="button" class="button button-secondary" id="free-watermarks-upload-button">
-            <?php _e('Select Image', 'free-watermarks'); ?>
+            <?php esc_html_e('Select Image', 'free-watermarks'); ?>
         </button>
         <button type="button" class="button button-secondary" id="free-watermarks-remove-button" style="display: <?php echo $imageId ? 'inline-block' : 'none'; ?>;">
-            <?php _e('Remove Image', 'free-watermarks'); ?>
+            <?php esc_html_e('Remove Image', 'free-watermarks'); ?>
         </button>
         <?php
     }
@@ -158,7 +158,7 @@ final class SettingsPage
             <option value="px" <?php selected('px', $unit); ?>>px</option>
             <option value="%" <?php selected('%', $unit); ?>>%</option>
         </select>
-        <p class="description"><?php _e('X and Y offset from the chosen position.', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('X and Y offset from the chosen position.', 'free-watermarks'); ?></p>
         <?php
     }
 
@@ -174,7 +174,7 @@ final class SettingsPage
             <option value="px" <?php selected('px', $unit); ?>>px</option>
             <option value="%" <?php selected('%', $unit); ?>>%</option>
         </select>
-        <p class="description"><?php _e('Width and Height of the watermark. Set height to 0 for auto-scaling.', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('Width and Height of the watermark. Set height to 0 for auto-scaling.', 'free-watermarks'); ?></p>
         <?php
     }
 
@@ -183,7 +183,7 @@ final class SettingsPage
         $opacity = $this->options['opacity'] ?? 80;
         ?>
         <input type="number" name="<?php echo esc_attr(self::OPTION_NAME); ?>[opacity]" value="<?php echo esc_attr($opacity); ?>" min="0" max="100" step="1">
-        <p class="description"><?php _e('Opacity in percent (0-100).', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('Opacity in percent (0-100).', 'free-watermarks'); ?></p>
         <?php
     }
 
@@ -197,7 +197,7 @@ final class SettingsPage
                 <option value="<?php echo esc_attr($mode); ?>" <?php selected($mode, $blendMode); ?>><?php echo esc_html(ucfirst($mode)); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e('How the watermark blends with the image.', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('How the watermark blends with the image.', 'free-watermarks'); ?></p>
         <?php
     }
 
@@ -231,9 +231,9 @@ final class SettingsPage
                 ?>
                 <label>
                     <input type="checkbox" name="<?php echo esc_attr(self::OPTION_NAME); ?>[imageSizes][]" value="<?php echo esc_attr($size); ?>" <?php checked(in_array($size, $appliedSizes, true)); ?>>
-                    <?php echo esc_html($size); ?><?php echo $dimensions; ?>
+                    <?php echo esc_html($size); ?><?php echo esc_html($dimensions); ?>
                     <?php if ('full' === $size): ?>
-                        <em style="color: red;">(<?php _e('Warning: Applying to full size is destructive and cannot be easily undone.', 'free-watermarks'); ?>)</em>
+                        <em style="color: red;">(<?php esc_html_e('Warning: Applying to full size is destructive and cannot be easily undone.', 'free-watermarks'); ?>)</em>
                     <?php endif; ?>
                 </label><br>
             <?php endforeach; ?>
@@ -250,28 +250,28 @@ final class SettingsPage
         if ($isImagickAvailable && $isGdAvailable) {
             ?>
             <select name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]">
-                <option value="auto" <?php selected('auto', $currentDriver); ?>><?php _e('Auto (Recommended)', 'free-watermarks'); ?></option>
-                <option value="imagick" <?php selected('imagick', $currentDriver); ?>><?php _e('Imagick (High Quality)', 'free-watermarks'); ?></option>
-                <option value="gd" <?php selected('gd', $currentDriver); ?>><?php _e('GD (Compatibility)', 'free-watermarks'); ?></option>
+                <option value="auto" <?php selected('auto', $currentDriver); ?>><?php esc_html_e('Auto (Recommended)', 'free-watermarks'); ?></option>
+                <option value="imagick" <?php selected('imagick', $currentDriver); ?>><?php esc_html_e('Imagick (High Quality)', 'free-watermarks'); ?></option>
+                <option value="gd" <?php selected('gd', $currentDriver); ?>><?php esc_html_e('GD (Compatibility)', 'free-watermarks'); ?></option>
             </select>
-            <p class="description"><?php _e('Choose the image processing library. Auto will use Imagick if available.', 'free-watermarks'); ?></p>
+            <p class="description"><?php esc_html_e('Choose the image processing library. Auto will use Imagick if available.', 'free-watermarks'); ?></p>
             <?php
         } elseif ($isImagickAvailable) {
             ?>
-            <p><strong><?php _e('Imagick', 'free-watermarks'); ?></strong></p>
-            <p class="description"><?php _e('Your server is using the Imagick library for high-quality image processing.', 'free-watermarks'); ?></p>
+            <p><strong><?php esc_html_e('Imagick', 'free-watermarks'); ?></strong></p>
+            <p class="description"><?php esc_html_e('Your server is using the Imagick library for high-quality image processing.', 'free-watermarks'); ?></p>
             <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]" value="auto">
             <?php
         } elseif ($isGdAvailable) {
             ?>
-            <p><strong><?php _e('GD', 'free-watermarks'); ?></strong></p>
-            <p class="description"><?php _e('Your server is using the GD library. For higher quality, consider installing the Imagick extension.', 'free-watermarks'); ?></p>
+            <p><strong><?php esc_html_e('GD', 'free-watermarks'); ?></strong></p>
+            <p class="description"><?php esc_html_e('Your server is using the GD library. For higher quality, consider installing the Imagick extension.', 'free-watermarks'); ?></p>
             <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]" value="auto">
             <?php
         } else {
             ?>
-            <p style="color: red;"><strong><?php _e('No compatible image processing library found!', 'free-watermarks'); ?></strong></p>
-            <p class="description"><?php _e('This plugin requires either the GD or Imagick PHP extension to be installed.', 'free-watermarks'); ?></p>
+            <p style="color: red;"><strong><?php esc_html_e('No compatible image processing library found!', 'free-watermarks'); ?></strong></p>
+            <p class="description"><?php esc_html_e('This plugin requires either the GD or Imagick PHP extension to be installed.', 'free-watermarks'); ?></p>
             <?php
         }
     }

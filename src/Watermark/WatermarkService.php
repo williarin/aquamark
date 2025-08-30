@@ -105,7 +105,7 @@ final class WatermarkService
                 do_action('free_watermarks_after_apply', $image, $settings);
             }
         } catch (\Exception $e) {
-            error_log('Free Watermarks Error: ' . $e->getMessage());
+            
         }
 
         return $metadata;

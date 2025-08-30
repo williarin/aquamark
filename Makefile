@@ -26,14 +26,17 @@ build: clean
 	@echo "--> Preparing build directory..."
 	mkdir -p $(BUILD_DIR)/$(PLUGIN_NAME)
 	@echo "--> Copying plugin files..."
-	cp -r assets src config composer.json free-watermarks.php $(BUILD_DIR)/$(PLUGIN_NAME)/
+	cp -r assets src config free-watermarks.php readme.txt license.txt DEVELOPER.md CHANGELOG.md $(BUILD_DIR)/$(PLUGIN_NAME)/
+	# Copy composer.json to the build directory to allow composer install
+	cp composer.json $(BUILD_DIR)/$(PLUGIN_NAME)/
 	@echo "--> Allowing Jetpack Autoloader plugin..."
 	cd $(BUILD_DIR)/$(PLUGIN_NAME) && composer config --no-plugins allow-plugins.automattic/jetpack-autoloader true
 	@echo "--> Adding Jetpack Autoloader for production..."
-	cd $(BUILD_DIR)/$(PLUGIN_NAME) && composer require automattic/jetpack-autoloader:"^5.0" --no-interaction
-	@echo "--> Optimizing final autoloader..."
-	cd $(BUILD_DIR)/$(PLUGIN_NAME) && composer dump-autoload --optimize --no-dev
+		cd $(BUILD_DIR)/$(PLUGIN_NAME) && composer require automattic/jetpack-autoloader:"^5.0" --no-interaction
+	@echo "--> Ensuring no dev dependencies are present after adding Jetpack Autoloader..."
+	cd $(BUILD_DIR)/$(PLUGIN_NAME) && composer update --no-dev --no-interaction --optimize-autoloader
 	@echo "--> Creating production zip file: $(ZIP_FILE)..."
+	rm $(BUILD_DIR)/$(PLUGIN_NAME)/composer.lock
 	cd $(BUILD_DIR) && zip -r ../$(ZIP_FILE) $(PLUGIN_NAME)
 	@echo ""
 	@echo "--> Build complete: $(ZIP_FILE) created."
