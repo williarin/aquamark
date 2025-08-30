@@ -33,5 +33,20 @@ final class Plugin
         $this->container->get(SettingsPage::class)->register();
         $this->container->get(WatermarkService::class)->register();
         $this->container->get(RegenerateService::class)->register();
+
+        add_filter('plugin_action_links_' . plugin_basename($this->pluginFile), [$this, 'addPluginActionLinks']);
+    }
+
+    public function addPluginActionLinks(array $links): array
+    {
+        $settingsLink = sprintf(
+            '<a href="%s">%s</a>',
+            admin_url('admin.php?page=free-watermarks'),
+            __('Settings', 'free-watermarks')
+        );
+
+        array_unshift($links, $settingsLink);
+
+        return $links;
     }
 }
