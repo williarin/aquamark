@@ -46,6 +46,7 @@ return static function (ContainerConfigurator $container): void {
 
     $services->get(SettingsPage::class)
         ->arg('$pluginFile', '%plugin.file%')
+        ->arg('$watermarkService', service(WatermarkService::class))
         ->public();
 
     $services->get(WatermarkService::class)->public();

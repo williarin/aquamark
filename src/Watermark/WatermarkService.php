@@ -37,6 +37,11 @@ final class WatermarkService
          */
         $settings = apply_filters('free_watermarks_settings', $baseSettings, $attachmentId);
 
+        // Prevent the watermark image itself from being watermarked
+        if ($attachmentId === $settings->watermarkImageId) {
+            return $metadata;
+        }
+
         if (empty($settings->imageSizes) || !$settings->watermarkImageId || !wp_attachment_is_image($attachmentId)) {
             return $metadata;
         }

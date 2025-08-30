@@ -6,6 +6,7 @@ namespace Williarin\FreeWatermarks\Admin;
 
 use Williarin\FreeWatermarks\Settings\Settings;
 use Williarin\FreeWatermarks\BlendModeEnum;
+use Williarin\FreeWatermarks\Watermark\WatermarkService;
 
 final class SettingsPage
 {
@@ -13,7 +14,8 @@ final class SettingsPage
     private array $options = [];
 
     public function __construct(
-        private readonly string $pluginFile
+        private readonly string $pluginFile,
+        private readonly WatermarkService $watermarkService
     ) {
     }
 
@@ -73,7 +75,25 @@ final class SettingsPage
 
     public function sanitize(array $input): array
     {
-        $input['watermarkImageId'] = isset($input['watermarkImageId']) ? (int) $input['watermarkImageId'] : 0;
+        $oldWatermarkImageId = (int) get_option(self::OPTION_NAME)['watermarkImageId'] ?? 0;
+        $newWatermarkImageId = isset($input['watermarkImageId']) ? (int) $input['watermarkImageId'] : 0;
+
+        // If a new watermark image is selected
+        if ($newWatermarkImageId !== $oldWatermarkImageId && $newWatermarkImageId !== 0) {
+            // Temporarily remove the watermark filter to prevent the new watermark from being watermarked
+            remove_filter('wp_generate_attachment_metadata', [$this->watermarkService, 'applyWatermark'], 10);
+
+            // Regenerate metadata for the new watermark image to ensure it's clean
+            $file = get_attached_file($newWatermarkImageId);
+            if ($file) {
+                wp_generate_attachment_metadata($newWatermarkImageId, $file);
+            }
+
+            // Re-add the watermark filter
+            add_filter('wp_generate_attachment_metadata', [$this->watermarkService, 'applyWatermark'], 10, 2);
+        }
+
+        $input['watermarkImageId'] = $newWatermarkImageId;
         $input['offsetX'] = isset($input['offsetX']) ? (int) $input['offsetX'] : 0;
         $input['offsetY'] = isset($input['offsetY']) ? (int) $input['offsetY'] : 0;
         $input['width'] = isset($input['width']) ? (int) $input['width'] : 0;

@@ -27,7 +27,8 @@ The plugin automatically uses the best available image processing library on you
 * **Target Specific Image Sizes**: Choose exactly which registered image sizes should receive the watermark (e.g., thumbnail, medium, large).
 * **Image Driver Selection**: Automatically uses the best image library available (Imagick or GD), with a manual override option for advanced users.
 * **Destructive Action Warning**: The plugin warns you if you choose to apply the watermark to the 'full' size image, as this is a permanent, destructive action.
-* **Regenerate Watermarks**: Easily apply new settings or remove watermarks from existing images via a "Regenerate Watermarks" bulk action in the Media Library.
+* **Regenerate Watermarks**: Easily apply new settings to existing images via a "Regenerate Watermarks" bulk action in the Media Library.
+* **Remove Watermarks**: Remove watermarks from existing images via a "Remove Watermarks" bulk action in the Media Library.
 * **Developer Friendly**: Includes WordPress actions and filters for programmatic extension and customization.
 * **Modern & Conflict-Free**: Built with modern PHP and scoped dependencies to prevent conflicts with other plugins.
 
@@ -46,6 +47,10 @@ On the settings page, click the "Select Image" button. This will open the WordPr
 = How do I apply watermarks to images I've already uploaded? =
 
 Go to your Media Library, switch to the list view, select the images you want to update, choose "Regenerate Watermarks" from the "Bulk actions" dropdown, and click "Apply".
+
+= How do I remove watermarks from images? =
+
+Go to your Media Library, switch to the list view, select the images you want to remove watermarks from, choose "Remove Watermarks" from the "Bulk actions" dropdown, and click "Apply".
 
 = What are Blend Modes? =
 
