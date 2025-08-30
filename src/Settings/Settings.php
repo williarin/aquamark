@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Settings;
+namespace Williarin\FreeWatermarks\Settings;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Williarin\FreeWatermarks\BlendModeEnum;
 
 final readonly class Settings
 {
@@ -49,7 +50,7 @@ final readonly class Settings
             'height' => 0, // 0 means auto
             'sizeUnit' => 'px',
             'opacity' => 80,
-            'blendMode' => 'opacity',
+            'blendMode' => BlendModeEnum::Opacity->value,
             'imageSizes' => [],
             'driver' => 'auto',
         ])
@@ -72,7 +73,7 @@ final readonly class Settings
             ])
             ->setAllowedValues('offsetUnit', ['px', '%'])
             ->setAllowedValues('sizeUnit', ['px', '%'])
-            ->setAllowedValues('blendMode', ['opacity', 'multiply', 'screen', 'overlay'])
+            ->setAllowedValues('blendMode', BlendModeEnum::values())
             ->setAllowedValues('opacity', range(0, 100))
             ->setAllowedValues('driver', ['auto', 'imagick', 'gd']);
     }

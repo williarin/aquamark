@@ -13,7 +13,7 @@
  * Domain Path:       /languages
  */
 
-use Plugin\Plugin;
+use Williarin\FreeWatermarks\Plugin;
 
 if (!defined('WPINC')) {
     die;

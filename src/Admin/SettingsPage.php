@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Admin;
+namespace Williarin\FreeWatermarks\Admin;
 
-use Plugin\Settings\Settings;
+use Williarin\FreeWatermarks\Settings\Settings;
+use Williarin\FreeWatermarks\BlendModeEnum;
 
 final class SettingsPage
 {
@@ -168,8 +169,8 @@ final class SettingsPage
 
     public function renderBlendModeField(): void
     {
-        $blendMode = $this->options['blendMode'] ?? 'opacity';
-        $modes = ['opacity', 'multiply', 'screen', 'overlay'];
+        $blendMode = $this->options['blendMode'] ?? BlendModeEnum::Opacity->value;
+        $modes = BlendModeEnum::values();
         ?>
         <select name="<?php echo esc_attr(self::OPTION_NAME); ?>[blendMode]">
             <?php foreach ($modes as $mode): ?>

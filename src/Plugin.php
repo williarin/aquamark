@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Plugin;
+namespace Williarin\FreeWatermarks;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Plugin\Admin\SettingsPage;
-use Plugin\Watermark\RegenerateService;
-use Plugin\Watermark\WatermarkService;
+use Williarin\FreeWatermarks\Admin\SettingsPage;
+use Williarin\FreeWatermarks\Watermark\RegenerateService;
+use Williarin\FreeWatermarks\Watermark\WatermarkService;
 
 final class Plugin
 {

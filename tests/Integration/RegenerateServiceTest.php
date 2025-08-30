@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Tests\Integration;
+namespace Williarin\FreeWatermarks\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Plugin\Watermark\RegenerateService;
+use Williarin\FreeWatermarks\Watermark\RegenerateService;
 
 class RegenerateServiceTest extends TestCase
 {

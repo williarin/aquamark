@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Watermark;
+namespace Williarin\FreeWatermarks\Watermark;
 
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
-use Plugin\Admin\SettingsPage;
-use Plugin\Image\Blender\BlenderManager;
-use Plugin\Settings\Settings;
+use Williarin\FreeWatermarks\Admin\SettingsPage;
+use Williarin\FreeWatermarks\Image\Blender\BlenderInterface;
+use Williarin\FreeWatermarks\Settings\Settings;
 
 final class WatermarkService
 {
     public function __construct(
         private readonly ImagineInterface $imagine,
-        private readonly BlenderManager $blenderManager
+        private readonly BlenderInterface $blender
     ) {
     }
 
@@ -88,7 +88,7 @@ final class WatermarkService
                  */
                 do_action('free_watermarks_before_apply', $image, $resizedWatermark, $settings);
 
-                $this->blenderManager->apply($settings->blendMode, $image, $resizedWatermark, $position, $settings->opacity);
+                $this->blender->blend($settings->blendMode, $image, $resizedWatermark, $position, $settings->opacity);
 
                 $image->save($imagePath);
 

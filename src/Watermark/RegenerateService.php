@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Watermark;
+namespace Williarin\FreeWatermarks\Watermark;
 
 final class RegenerateService
 {

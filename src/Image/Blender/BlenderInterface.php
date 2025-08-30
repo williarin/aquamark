@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Image\Blender;
+namespace Williarin\FreeWatermarks\Image\Blender;
 
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;
@@ -13,5 +13,5 @@ interface BlenderInterface
 {
     public function supports(string $mode): bool;
 
-    public function blend(ImageInterface $image, ImageInterface $watermark, Point $start, int $opacity = 100): void;
+    public function blend(string $mode, ImageInterface $image, ImageInterface $watermark, Point $start, int $opacity = 100): void;
 }

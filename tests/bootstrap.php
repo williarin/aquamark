@@ -1,7 +1,7 @@
 <?php
 
 // First, load the autoloader
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload_packages.php';
 
 // Initialize WP_Mock
 \WP_Mock::bootstrap();

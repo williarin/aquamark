@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Image;
+namespace Williarin\FreeWatermarks\Image;
 
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Imagick\Imagine as ImagickImagine;
 use Imagine\Image\ImagineInterface;
-use Plugin\Admin\SettingsPage;
-use Plugin\Settings\Settings;
+use Williarin\FreeWatermarks\Admin\SettingsPage;
+use Williarin\FreeWatermarks\Settings\Settings;
 
 final class ImagineFactory
 {

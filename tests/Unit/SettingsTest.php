@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Tests\Unit;
+namespace Williarin\FreeWatermarks\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Plugin\Settings\Settings;
+use Williarin\FreeWatermarks\Settings\Settings;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 class SettingsTest extends TestCase
