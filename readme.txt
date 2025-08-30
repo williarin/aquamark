@@ -34,9 +34,9 @@ The plugin automatically uses the best available image processing library on you
 
 == Installation ==
 
-1.  Upload the `free-watermarks` folder to the `/wp-content/plugins/` directory.
-2.  Activate the plugin through the 'Plugins' menu in WordPress.
-3.  Go to **Settings > Free Watermarks** to configure the plugin.
+1. Upload the `free-watermarks` folder to the `/wp-content/plugins/` directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Go to **Settings > Free Watermarks** to configure the plugin.
 
 == Frequently Asked Questions ==
 
