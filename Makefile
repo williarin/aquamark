@@ -25,9 +25,14 @@ update:
 build: clean
 	@echo "--> Preparing build directory..."
 	mkdir -p $(BUILD_DIR)
-	@echo "--> Installing production dependencies in build directory..."
+	@echo "--> Copying plugin files..."
 	cp -r assets src config composer.json free-watermarks.php $(BUILD_DIR)/
-	cd $(BUILD_DIR) && composer install --no-dev --optimize-autoloader
+	@echo "--> Allowing Jetpack Autoloader plugin..."
+	cd $(BUILD_DIR) && composer config --no-plugins allow-plugins.automattic/jetpack-autoloader true
+	@echo "--> Adding Jetpack Autoloader for production..."
+	cd $(BUILD_DIR) && composer require automattic/jetpack-autoloader:"^5.0" --no-interaction
+	@echo "--> Optimizing final autoloader..."
+	cd $(BUILD_DIR) && composer dump-autoload --optimize --no-dev
 	@echo "--> Creating production zip file: $(ZIP_FILE)..."
 	cd $(BUILD_DIR) && zip -r ../$(ZIP_FILE) .
 	@echo ""

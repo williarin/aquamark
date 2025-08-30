@@ -4,23 +4,29 @@ declare(strict_types=1);
 
 namespace Williarin\FreeWatermarks\Tests\Integration;
 
-use PHPUnit\Framework\TestCase;
-use Williarin\FreeWatermarks\Watermark\WatermarkService;
-use Williarin\FreeWatermarks\Admin\SettingsPage;
-use Imagine\Image\ImagineInterface;
-use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
+use Imagine\Image\ImageInterface;
+use Imagine\Image\ImagineInterface;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\TestCase;
+use Williarin\FreeWatermarks\Admin\SettingsPage;
 use Williarin\FreeWatermarks\Image\Blender\BlenderInterface;
 use Williarin\FreeWatermarks\Settings\Settings;
+use Williarin\FreeWatermarks\Watermark\WatermarkService;
 
 class WatermarkServiceTest extends TestCase
 {
+    private vfsStreamDirectory $root;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         \WP_Mock::tearDown();
         \WP_Mock::setUp();
+
+        $this->root = vfsStream::setup('tmp');
     }
 
     protected function tearDown(): void
@@ -80,6 +86,22 @@ class WatermarkServiceTest extends TestCase
 
     public function testApplyWatermarkProcessesImagesCorrectly(): void
     {
+        vfsStream::create([
+            'uploads' => [
+                'watermark.png' => 'watermark_content',
+                '2025' => [
+                    '08' => [
+                        'image-150x150.jpg' => 'thumb_content',
+                        'image-300x300.jpg' => 'medium_content',
+                    ]
+                ]
+            ]
+        ], $this->root);
+
+        $watermarkPath = vfsStream::url('tmp/uploads/watermark.png');
+        $thumbPath = vfsStream::url('tmp/uploads/2025/08/image-150x150.jpg');
+        $mediumPath = vfsStream::url('tmp/uploads/2025/08/image-300x300.jpg');
+
         $settings = new Settings([
             'watermarkImageId' => 100,
             'position' => 'bottom-right',
@@ -105,12 +127,12 @@ class WatermarkServiceTest extends TestCase
         \WP_Mock::userFunction('get_attached_file')
             ->with(100)
             ->once()
-            ->andReturn('/tmp/uploads/watermark.png');
+            ->andReturn($watermarkPath);
 
         \WP_Mock::userFunction('wp_get_upload_dir')
             ->andReturn([
-                'path' => '/tmp/uploads/2025/08',
-                'basedir' => '/tmp/uploads',
+                'path' => vfsStream::url('tmp/uploads/2025/08'),
+                'basedir' => vfsStream::url('tmp/uploads'),
             ]);
 
         $watermarkImageMock = $this->createMock(ImageInterface::class);
@@ -122,9 +144,9 @@ class WatermarkServiceTest extends TestCase
         $imagineMock->expects($this->exactly(3))
             ->method('open')
             ->willReturnMap([
-                ['/tmp/uploads/watermark.png', $watermarkImageMock],
-                ['/tmp/uploads/2025/08/image-150x150.jpg', $baseImageThumbnailMock],
-                ['/tmp/uploads/2025/08/image-300x300.jpg', $baseImageMediumMock],
+                [$watermarkPath, $watermarkImageMock],
+                [$thumbPath, $baseImageThumbnailMock],
+                [$mediumPath, $baseImageMediumMock],
             ]);
 
         $watermarkImageMock->method('getSize')->willReturn(new Box(100, 100));
@@ -132,7 +154,7 @@ class WatermarkServiceTest extends TestCase
         $watermarkImageMock->method('resize')->willReturnSelf();
         $baseImageThumbnailMock->method('getSize')->willReturn(new Box(150, 150));
         $baseImageMediumMock->method('getSize')->willReturn(new Box(300, 300));
-        
+
         \WP_Mock::userFunction('apply_filters')
             ->with('free_watermarks_watermark_image', $watermarkImageMock, $settings)
             ->andReturn($watermarkImageMock);
@@ -148,7 +170,7 @@ class WatermarkServiceTest extends TestCase
                 'medium' => ['file' => 'image-300x300.jpg'],
             ],
         ];
-        
+
         $resultMetadata = $service->applyWatermark($metadata, 1);
 
         self::assertSame($metadata, $resultMetadata);
