@@ -7,6 +7,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Imagine\Image\ImagineInterface;
 use Williarin\FreeWatermarks\Admin\SettingsPage;
 use Williarin\FreeWatermarks\Watermark\RegenerateService;
+use Williarin\FreeWatermarks\Watermark\RemoveService;
 use Williarin\FreeWatermarks\Watermark\WatermarkService;
 use Williarin\FreeWatermarks\Image\ImagineFactory;
 use Williarin\FreeWatermarks\Image\Blender\PixelBlender\OpacityPixelBlender;
@@ -49,4 +50,5 @@ return static function (ContainerConfigurator $container): void {
 
     $services->get(WatermarkService::class)->public();
     $services->get(RegenerateService::class)->public();
+    $services->get(RemoveService::class)->public();
 };

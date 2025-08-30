@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Williarin\FreeWatermarks\Admin\SettingsPage;
 use Williarin\FreeWatermarks\Watermark\RegenerateService;
+use Williarin\FreeWatermarks\Watermark\RemoveService;
 use Williarin\FreeWatermarks\Watermark\WatermarkService;
 
 final class Plugin
@@ -33,6 +34,7 @@ final class Plugin
         $this->container->get(SettingsPage::class)->register();
         $this->container->get(WatermarkService::class)->register();
         $this->container->get(RegenerateService::class)->register();
+        $this->container->get(RemoveService::class)->register();
 
         add_filter('plugin_action_links_' . plugin_basename($this->pluginFile), [$this, 'addPluginActionLinks']);
     }
