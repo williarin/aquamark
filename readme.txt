@@ -2,7 +2,7 @@
 Contributors: williarin
 Tags: watermark, image, media, branding, free
 Requires at least: 6.0
-Tested up to: 6.8.2
+Tested up to: 6.8
 Stable tag: 1.0.0
 Requires PHP: 8.2
 License: GPLv2 or later
