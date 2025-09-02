@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Imagine\Image\ImagineInterface;
-use Williarin\FreeWatermarks\Admin\SettingsPage;
-use Williarin\FreeWatermarks\Watermark\RegenerateService;
-use Williarin\FreeWatermarks\Watermark\RemoveService;
-use Williarin\FreeWatermarks\Watermark\WatermarkService;
-use Williarin\FreeWatermarks\Image\ImagineFactory;
-use Williarin\FreeWatermarks\Image\Blender\PixelBlender\OpacityPixelBlender;
-use Williarin\FreeWatermarks\Image\Blender\PixelBlender\MultiplyPixelBlender;
-use Williarin\FreeWatermarks\Image\Blender\PixelBlender\ScreenPixelBlender;
-use Williarin\FreeWatermarks\Image\Blender\PixelBlender\OverlayPixelBlender;
-use Williarin\FreeWatermarks\Image\Blender\PixelBlender\PixelBlenderInterface;
-use Williarin\FreeWatermarks\BlendModeEnum;
-use Williarin\FreeWatermarks\Image\Blender\ImageBlender;
-use Williarin\FreeWatermarks\Image\Blender\BlenderInterface;
+use Williarin\AquaMark\Admin\SettingsPage;
+use Williarin\AquaMark\Watermark\RegenerateService;
+use Williarin\AquaMark\Watermark\RemoveService;
+use Williarin\AquaMark\Watermark\WatermarkService;
+use Williarin\AquaMark\Image\ImagineFactory;
+use Williarin\AquaMark\Image\Blender\PixelBlender\OpacityPixelBlender;
+use Williarin\AquaMark\Image\Blender\PixelBlender\MultiplyPixelBlender;
+use Williarin\AquaMark\Image\Blender\PixelBlender\ScreenPixelBlender;
+use Williarin\AquaMark\Image\Blender\PixelBlender\OverlayPixelBlender;
+use Williarin\AquaMark\Image\Blender\PixelBlender\PixelBlenderInterface;
+use Williarin\AquaMark\BlendModeEnum;
+use Williarin\AquaMark\Image\Blender\ImageBlender;
+use Williarin\AquaMark\Image\Blender\BlenderInterface;
 
 return static function (ContainerConfigurator $container): void {
     $services = $container->services()
@@ -25,7 +25,7 @@ return static function (ContainerConfigurator $container): void {
         ->autowire()
         ->autoconfigure();
 
-    $services->load('Williarin\\FreeWatermarks\\', '../src/*')
+    $services->load('Williarin\\AquaMark\\', '../src/*')
         ->exclude('../src/{DependencyInjection,Settings,Image/Blender}');
 
     // Add ImageBlender

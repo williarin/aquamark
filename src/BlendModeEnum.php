@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks;
+namespace Williarin\AquaMark;
 
 enum BlendModeEnum: string
 {

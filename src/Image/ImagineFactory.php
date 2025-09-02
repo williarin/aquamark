@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Image;
+namespace Williarin\AquaMark\Image;
 
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Imagick\Imagine as ImagickImagine;
 use Imagine\Image\ImagineInterface;
-use Williarin\FreeWatermarks\Admin\SettingsPage;
-use Williarin\FreeWatermarks\Settings\Settings;
+use Williarin\AquaMark\Admin\SettingsPage;
+use Williarin\AquaMark\Settings\Settings;
 
 final class ImagineFactory
 {

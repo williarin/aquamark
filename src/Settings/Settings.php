@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Settings;
+namespace Williarin\AquaMark\Settings;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Williarin\FreeWatermarks\BlendModeEnum;
+use Williarin\AquaMark\BlendModeEnum;
 
 final readonly class Settings
 {

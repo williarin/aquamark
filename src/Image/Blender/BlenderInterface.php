@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Image\Blender;
+namespace Williarin\AquaMark\Image\Blender;
 
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;

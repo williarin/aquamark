@@ -63,7 +63,7 @@ jobs:
       - name: Run Plugin Check
         uses: WordPress/plugin-check-action@v1
         with:
-          build-dir: 'build/free-watermarks/'
+          build-dir: 'build/aquamark/'
 
   update-tested-up-to:
     name: Update Tested Up To & Tag
@@ -158,7 +158,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: ${{ steps.get_release_notes.outputs.changelog }}
           generateReleaseNotes: false
-          artifacts: "free-watermarks.zip"
+          artifacts: "aquamark.zip"
 
   deploy:
     name: WordPress Plugin Deploy
@@ -176,6 +176,6 @@ jobs:
         env:
           WPORG_USERNAME: ${{ secrets.WPORG_USERNAME }}
           WPORG_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
-          WPORG_PLUGIN_SLUG: free-watermarks
+          WPORG_PLUGIN_SLUG: aquamark
           BUILD_STEP: "make build"
           ASSETS_DIR: ".wordpress-org"

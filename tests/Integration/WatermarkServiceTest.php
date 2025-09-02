@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Tests\Integration;
+namespace Williarin\AquaMark\Tests\Integration;
 
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
@@ -10,10 +10,10 @@ use Imagine\Image\ImagineInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
-use Williarin\FreeWatermarks\Admin\SettingsPage;
-use Williarin\FreeWatermarks\Image\Blender\BlenderInterface;
-use Williarin\FreeWatermarks\Settings\Settings;
-use Williarin\FreeWatermarks\Watermark\WatermarkService;
+use Williarin\AquaMark\Admin\SettingsPage;
+use Williarin\AquaMark\Image\Blender\BlenderInterface;
+use Williarin\AquaMark\Settings\Settings;
+use Williarin\AquaMark\Watermark\WatermarkService;
 
 class WatermarkServiceTest extends TestCase
 {
@@ -116,7 +116,7 @@ class WatermarkServiceTest extends TestCase
             ->andReturn($settings->toArray());
 
         \WP_Mock::userFunction('apply_filters')
-            ->with('free_watermarks_settings', \WP_Mock\Functions::type(Settings::class), 1)
+            ->with('aquamark_settings', \WP_Mock\Functions::type(Settings::class), 1)
             ->andReturn($settings);
 
         \WP_Mock::userFunction('wp_attachment_is_image')
@@ -156,7 +156,7 @@ class WatermarkServiceTest extends TestCase
         $baseImageMediumMock->method('getSize')->willReturn(new Box(300, 300));
 
         \WP_Mock::userFunction('apply_filters')
-            ->with('free_watermarks_watermark_image', $watermarkImageMock, $settings)
+            ->with('aquamark_watermark_image', $watermarkImageMock, $settings)
             ->andReturn($watermarkImageMock);
 
         $blenderMock->expects($this->exactly(2))->method('blend');

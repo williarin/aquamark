@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
 
     var frame;
 
-    $('#free-watermarks-upload-button').on('click', function(e) {
+    $('#aquamark-upload-button').on('click', function(e) {
         e.preventDefault();
 
         if (frame) {
@@ -21,18 +21,18 @@ jQuery(document).ready(function($) {
 
         frame.on('select', function() {
             var attachment = frame.state().get('selection').first().toJSON();
-            $('input[name="free_watermarks_settings[watermarkImageId]"]').val(attachment.id);
-            $('.free-watermarks-image-preview').html('<img src="' + attachment.url + '" style="max-width: 200px; max-height: 200px;"/>');
-            $('#free-watermarks-remove-button').show();
+            $('input[name="aquamark_settings[watermarkImageId]"]').val(attachment.id);
+            $('.aquamark-image-preview').html('<img src="' + attachment.url + '" style="max-width: 200px; max-height: 200px;"/>');
+            $('#aquamark-remove-button').show();
         });
 
         frame.open();
     });
 
-    $('#free-watermarks-remove-button').on('click', function(e) {
+    $('#aquamark-remove-button').on('click', function(e) {
         e.preventDefault();
-        $('input[name="free_watermarks_settings[watermarkImageId]"]').val(0);
-        $('.free-watermarks-image-preview').html('');
+        $('input[name="aquamark_settings[watermarkImageId]"]').val(0);
+        $('.aquamark-image-preview').html('');
         $(this).hide();
     });
 });

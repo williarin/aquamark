@@ -1,4 +1,4 @@
-=== Free Watermarks ===
+=== AquaMark ===
 Contributors: williarin
 Tags: watermark, image, media, branding, free
 Requires at least: 6.0
@@ -12,7 +12,7 @@ Add a custom watermark to your images in the WordPress media library with powerf
 
 == Description ==
 
-Free Watermarks is a full-featured, professional solution for applying image watermarks to your media uploads.
+AquaMark is a full-featured, professional solution for applying image watermarks to your media uploads.
 Built with a modern, robust architecture, it provides extensive control over the appearance and placement of your watermark, ensuring your brand is consistently represented across your site.
 The plugin automatically uses the best available image processing library on your server (Imagick for quality, GD for compatibility) to deliver excellent results.
 
@@ -34,9 +34,9 @@ The plugin automatically uses the best available image processing library on you
 
 == Installation ==
 
-1. Upload the `free-watermarks` folder to the `/wp-content/plugins/` directory.
+1. Upload the `aquamark` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to **Settings > Free Watermarks** to configure the plugin.
+3. Go to **Settings > AquaMark** to configure the plugin.
 
 == Frequently Asked Questions ==
 

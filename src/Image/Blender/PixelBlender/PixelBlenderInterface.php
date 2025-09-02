@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Image\Blender\PixelBlender;
+namespace Williarin\AquaMark\Image\Blender\PixelBlender;
 
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 

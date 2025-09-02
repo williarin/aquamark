@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Admin;
+namespace Williarin\AquaMark\Admin;
 
-use Williarin\FreeWatermarks\Settings\Settings;
-use Williarin\FreeWatermarks\BlendModeEnum;
-use Williarin\FreeWatermarks\Watermark\WatermarkService;
+use Williarin\AquaMark\Settings\Settings;
+use Williarin\AquaMark\BlendModeEnum;
+use Williarin\AquaMark\Watermark\WatermarkService;
 
 final class SettingsPage
 {
-    public const OPTION_NAME = 'free_watermarks_settings';
+    public const OPTION_NAME = 'aquamark_settings';
     private array $options = [];
 
     public function __construct(
@@ -28,49 +28,49 @@ final class SettingsPage
 
     public function enqueueScripts(string $hook): void
     {
-        if ('settings_page_free-watermarks' !== $hook) {
+        if ('settings_page_aquamark' !== $hook) {
             return;
         }
 
         $scriptUrl = plugin_dir_url($this->pluginFile) . 'assets/js/admin.js';
         
-        wp_enqueue_script('free-watermarks-admin', $scriptUrl, ['jquery', 'media-upload', 'thickbox'], '1.0.0', true);
+        wp_enqueue_script('aquamark-admin', $scriptUrl, ['jquery', 'media-upload', 'thickbox'], '1.0.0', true);
         wp_enqueue_media();
     }
 
     public function addOptionsPage(): void
     {
         add_options_page(
-            __('Free Watermarks', 'free-watermarks'),
-            __('Free Watermarks', 'free-watermarks'),
+            __('AquaMark', 'aquamark'),
+            __('AquaMark', 'aquamark'),
             'manage_options',
-            'free-watermarks',
+            'aquamark',
             [$this, 'renderPage']
         );
     }
 
     public function registerSettings(): void
     {
-        register_setting('free-watermarks', self::OPTION_NAME, [
+        register_setting('aquamark', self::OPTION_NAME, [
             'sanitize_callback' => [$this, 'sanitize'],
             'default' => (new Settings([]))->toArray(),
         ]);
 
         add_settings_section(
-            'free_watermarks_general',
-            __('Watermark Settings', 'free-watermarks'),
+            'aquamark_general',
+            __('Watermark Settings', 'aquamark'),
             [$this, 'renderSectionHeader'],
-            'free-watermarks'
+            'aquamark'
         );
 
-        add_settings_field('watermarkImageId', __('Watermark Image', 'free-watermarks'), [$this, 'renderWatermarkImageField'], 'free-watermarks', 'free_watermarks_general');
-        add_settings_field('position', __('Position', 'free-watermarks'), [$this, 'renderPositionField'], 'free-watermarks', 'free_watermarks_general');
-        add_settings_field('offset', __('Offset', 'free-watermarks'), [$this, 'renderOffsetField'], 'free-watermarks', 'free_watermarks_general');
-        add_settings_field('size', __('Size', 'free-watermarks'), [$this, 'renderSizeField'], 'free-watermarks', 'free_watermarks_general');
-        add_settings_field('opacity', __('Opacity', 'free-watermarks'), [$this, 'renderOpacityField'], 'free-watermarks', 'free_watermarks_general');
-        add_settings_field('blendMode', __('Blend Mode', 'free-watermarks'), [$this, 'renderBlendModeField'], 'free-watermarks', 'free_watermarks_general');
-        add_settings_field('imageSizes', __('Apply to Image Sizes', 'free-watermarks'), [$this, 'renderImageSizesField'], 'free-watermarks', 'free_watermarks_general');
-        add_settings_field('driver', __('Image Processing Driver', 'free-watermarks'), [$this, 'renderDriverField'], 'free-watermarks', 'free_watermarks_general');
+        add_settings_field('watermarkImageId', __('Watermark Image', 'aquamark'), [$this, 'renderWatermarkImageField'], 'aquamark', 'aquamark_general');
+        add_settings_field('position', __('Position', 'aquamark'), [$this, 'renderPositionField'], 'aquamark', 'aquamark_general');
+        add_settings_field('offset', __('Offset', 'aquamark'), [$this, 'renderOffsetField'], 'aquamark', 'aquamark_general');
+        add_settings_field('size', __('Size', 'aquamark'), [$this, 'renderSizeField'], 'aquamark', 'aquamark_general');
+        add_settings_field('opacity', __('Opacity', 'aquamark'), [$this, 'renderOpacityField'], 'aquamark', 'aquamark_general');
+        add_settings_field('blendMode', __('Blend Mode', 'aquamark'), [$this, 'renderBlendModeField'], 'aquamark', 'aquamark_general');
+        add_settings_field('imageSizes', __('Apply to Image Sizes', 'aquamark'), [$this, 'renderImageSizesField'], 'aquamark', 'aquamark_general');
+        add_settings_field('driver', __('Image Processing Driver', 'aquamark'), [$this, 'renderDriverField'], 'aquamark', 'aquamark_general');
     }
 
     public function sanitize(array $input): array
@@ -106,7 +106,7 @@ final class SettingsPage
 
     public function renderSectionHeader(): void
     {
-        echo '<p>' . esc_html__('Configure the appearance and placement of the watermark.', 'free-watermarks') . '</p>';
+        echo '<p>' . esc_html__('Configure the appearance and placement of the watermark.', 'aquamark') . '</p>';
     }
 
     public function renderWatermarkImageField(): void
@@ -114,17 +114,17 @@ final class SettingsPage
         $imageId = $this->options['watermarkImageId'] ?? 0;
         $imageUrl = $imageId ? wp_get_attachment_image_url($imageId, 'medium') : '';
         ?>
-        <div class="free-watermarks-image-preview" style="margin-bottom: 10px;">
+        <div class="aquamark-image-preview" style="margin-bottom: 10px;">
             <?php if ($imageUrl): ?>
                 <img src="<?php echo esc_url($imageUrl); ?>" style="max-width: 200px; max-height: 200px;">
             <?php endif; ?>
         </div>
         <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[watermarkImageId]" value="<?php echo esc_attr($imageId); ?>">
-        <button type="button" class="button button-secondary" id="free-watermarks-upload-button">
-            <?php esc_html_e('Select Image', 'free-watermarks'); ?>
+        <button type="button" class="button button-secondary" id="aquamark-upload-button">
+            <?php esc_html_e('Select Image', 'aquamark'); ?>
         </button>
-        <button type="button" class="button button-secondary" id="free-watermarks-remove-button" style="display: <?php echo $imageId ? 'inline-block' : 'none'; ?>;">
-            <?php esc_html_e('Remove Image', 'free-watermarks'); ?>
+        <button type="button" class="button button-secondary" id="aquamark-remove-button" style="display: <?php echo $imageId ? 'inline-block' : 'none'; ?>;">
+            <?php esc_html_e('Remove Image', 'aquamark'); ?>
         </button>
         <?php
     }
@@ -133,9 +133,9 @@ final class SettingsPage
     {
         $position = $this->options['position'] ?? 'bottom-right';
         $positions = [
-            'top-left' => __('Top Left', 'free-watermarks'), 'top-center' => __('Top Center', 'free-watermarks'), 'top-right' => __('Top Right', 'free-watermarks'),
-            'middle-left' => __('Middle Left', 'free-watermarks'), 'middle-center' => __('Middle Center', 'free-watermarks'), 'middle-right' => __('Middle Right', 'free-watermarks'),
-            'bottom-left' => __('Bottom Left', 'free-watermarks'), 'bottom-center' => __('Bottom Center', 'free-watermarks'), 'bottom-right' => __('Bottom Right', 'free-watermarks'),
+            'top-left' => __('Top Left', 'aquamark'), 'top-center' => __('Top Center', 'aquamark'), 'top-right' => __('Top Right', 'aquamark'),
+            'middle-left' => __('Middle Left', 'aquamark'), 'middle-center' => __('Middle Center', 'aquamark'), 'middle-right' => __('Middle Right', 'aquamark'),
+            'bottom-left' => __('Bottom Left', 'aquamark'), 'bottom-center' => __('Bottom Center', 'aquamark'), 'bottom-right' => __('Bottom Right', 'aquamark'),
         ];
         ?>
         <select name="<?php echo esc_attr(self::OPTION_NAME); ?>[position]">
@@ -158,7 +158,7 @@ final class SettingsPage
             <option value="px" <?php selected('px', $unit); ?>>px</option>
             <option value="%" <?php selected('%', $unit); ?>>%</option>
         </select>
-        <p class="description"><?php esc_html_e('X and Y offset from the chosen position.', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('X and Y offset from the chosen position.', 'aquamark'); ?></p>
         <?php
     }
 
@@ -174,7 +174,7 @@ final class SettingsPage
             <option value="px" <?php selected('px', $unit); ?>>px</option>
             <option value="%" <?php selected('%', $unit); ?>>%</option>
         </select>
-        <p class="description"><?php esc_html_e('Width and Height of the watermark. Set height to 0 for auto-scaling.', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('Width and Height of the watermark. Set height to 0 for auto-scaling.', 'aquamark'); ?></p>
         <?php
     }
 
@@ -183,7 +183,7 @@ final class SettingsPage
         $opacity = $this->options['opacity'] ?? 80;
         ?>
         <input type="number" name="<?php echo esc_attr(self::OPTION_NAME); ?>[opacity]" value="<?php echo esc_attr($opacity); ?>" min="0" max="100" step="1">
-        <p class="description"><?php esc_html_e('Opacity in percent (0-100).', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('Opacity in percent (0-100).', 'aquamark'); ?></p>
         <?php
     }
 
@@ -197,7 +197,7 @@ final class SettingsPage
                 <option value="<?php echo esc_attr($mode); ?>" <?php selected($mode, $blendMode); ?>><?php echo esc_html(ucfirst($mode)); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php esc_html_e('How the watermark blends with the image.', 'free-watermarks'); ?></p>
+        <p class="description"><?php esc_html_e('How the watermark blends with the image.', 'aquamark'); ?></p>
         <?php
     }
 
@@ -233,7 +233,7 @@ final class SettingsPage
                     <input type="checkbox" name="<?php echo esc_attr(self::OPTION_NAME); ?>[imageSizes][]" value="<?php echo esc_attr($size); ?>" <?php checked(in_array($size, $appliedSizes, true)); ?>>
                     <?php echo esc_html($size); ?><?php echo esc_html($dimensions); ?>
                     <?php if ('full' === $size): ?>
-                        <em style="color: red;">(<?php esc_html_e('Warning: Applying to full size is destructive and cannot be easily undone.', 'free-watermarks'); ?>)</em>
+                        <em style="color: red;">(<?php esc_html_e('Warning: Applying to full size is destructive and cannot be easily undone.', 'aquamark'); ?>)</em>
                     <?php endif; ?>
                 </label><br>
             <?php endforeach; ?>
@@ -250,28 +250,28 @@ final class SettingsPage
         if ($isImagickAvailable && $isGdAvailable) {
             ?>
             <select name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]">
-                <option value="auto" <?php selected('auto', $currentDriver); ?>><?php esc_html_e('Auto (Recommended)', 'free-watermarks'); ?></option>
-                <option value="imagick" <?php selected('imagick', $currentDriver); ?>><?php esc_html_e('Imagick (High Quality)', 'free-watermarks'); ?></option>
-                <option value="gd" <?php selected('gd', $currentDriver); ?>><?php esc_html_e('GD (Compatibility)', 'free-watermarks'); ?></option>
+                <option value="auto" <?php selected('auto', $currentDriver); ?>><?php esc_html_e('Auto (Recommended)', 'aquamark'); ?></option>
+                <option value="imagick" <?php selected('imagick', $currentDriver); ?>><?php esc_html_e('Imagick (High Quality)', 'aquamark'); ?></option>
+                <option value="gd" <?php selected('gd', $currentDriver); ?>><?php esc_html_e('GD (Compatibility)', 'aquamark'); ?></option>
             </select>
-            <p class="description"><?php esc_html_e('Choose the image processing library. Auto will use Imagick if available.', 'free-watermarks'); ?></p>
+            <p class="description"><?php esc_html_e('Choose the image processing library. Auto will use Imagick if available.', 'aquamark'); ?></p>
             <?php
         } elseif ($isImagickAvailable) {
             ?>
-            <p><strong><?php esc_html_e('Imagick', 'free-watermarks'); ?></strong></p>
-            <p class="description"><?php esc_html_e('Your server is using the Imagick library for high-quality image processing.', 'free-watermarks'); ?></p>
+            <p><strong><?php esc_html_e('Imagick', 'aquamark'); ?></strong></p>
+            <p class="description"><?php esc_html_e('Your server is using the Imagick library for high-quality image processing.', 'aquamark'); ?></p>
             <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]" value="auto">
             <?php
         } elseif ($isGdAvailable) {
             ?>
-            <p><strong><?php esc_html_e('GD', 'free-watermarks'); ?></strong></p>
-            <p class="description"><?php esc_html_e('Your server is using the GD library. For higher quality, consider installing the Imagick extension.', 'free-watermarks'); ?></p>
+            <p><strong><?php esc_html_e('GD', 'aquamark'); ?></strong></p>
+            <p class="description"><?php esc_html_e('Your server is using the GD library. For higher quality, consider installing the Imagick extension.', 'aquamark'); ?></p>
             <input type="hidden" name="<?php echo esc_attr(self::OPTION_NAME); ?>[driver]" value="auto">
             <?php
         } else {
             ?>
-            <p style="color: red;"><strong><?php esc_html_e('No compatible image processing library found!', 'free-watermarks'); ?></strong></p>
-            <p class="description"><?php esc_html_e('This plugin requires either the GD or Imagick PHP extension to be installed.', 'free-watermarks'); ?></p>
+            <p style="color: red;"><strong><?php esc_html_e('No compatible image processing library found!', 'aquamark'); ?></strong></p>
+            <p class="description"><?php esc_html_e('This plugin requires either the GD or Imagick PHP extension to be installed.', 'aquamark'); ?></p>
             <?php
         }
     }
@@ -284,8 +284,8 @@ final class SettingsPage
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             <form action="options.php" method="post">
                 <?php
-                settings_fields('free-watermarks');
-                do_settings_sections('free-watermarks');
+                settings_fields('aquamark');
+                do_settings_sections('aquamark');
                 submit_button();
                 ?>
             </form>

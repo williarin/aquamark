@@ -1,7 +1,7 @@
-# Free Watermarks Plugin Makefile
+# AquaMark Plugin Makefile
 
 # Variables
-PLUGIN_NAME = free-watermarks
+PLUGIN_NAME = aquamark
 BUILD_DIR = build
 ZIP_FILE = $(PLUGIN_NAME).zip
 
@@ -26,7 +26,7 @@ build: clean
 	@echo "--> Preparing build directory..."
 	mkdir -p $(BUILD_DIR)/$(PLUGIN_NAME)
 	@echo "--> Copying plugin files..."
-	cp -r assets src config free-watermarks.php readme.txt license.txt DEVELOPER.md CHANGELOG.md $(BUILD_DIR)/$(PLUGIN_NAME)/
+	cp -r assets src config aquamark.php readme.txt license.txt DEVELOPER.md CHANGELOG.md $(BUILD_DIR)/$(PLUGIN_NAME)/
 	# Copy composer.json to the build directory to allow composer install
 	cp composer.json $(BUILD_DIR)/$(PLUGIN_NAME)/
 	@echo "--> Allowing Jetpack Autoloader plugin..."
@@ -36,7 +36,7 @@ build: clean
 	@echo "--> Ensuring no dev dependencies are present after adding Jetpack Autoloader..."
 	cd $(BUILD_DIR)/$(PLUGIN_NAME) && composer update --no-dev --no-interaction --optimize-autoloader
 	@echo "--> Creating production zip file: $(ZIP_FILE)..."
-	rm $(BUILD_DIR)/$(PLUGIN_NAME)/composer.lock
+	rm $(BUILD_DIR)/$(PLUGIN_NAME)/composer.lock $(BUILD_DIR)/$(PLUGIN_NAME)/assets/*.jpg
 	cd $(BUILD_DIR) && zip -r ../$(ZIP_FILE) $(PLUGIN_NAME)
 	@echo ""
 	@echo "--> Build complete: $(ZIP_FILE) created."

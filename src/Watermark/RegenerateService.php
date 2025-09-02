@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Watermark;
+namespace Williarin\AquaMark\Watermark;
 
 final class RegenerateService
 {
@@ -15,7 +15,7 @@ final class RegenerateService
 
     public function addBulkAction(array $bulkActions): array
     {
-        $bulkActions['regenerate_watermarks'] = __('Regenerate Watermarks', 'free-watermarks');
+        $bulkActions['regenerate_watermarks'] = __('Regenerate Watermarks', 'aquamark');
         return $bulkActions;
     }
 
@@ -71,7 +71,7 @@ final class RegenerateService
                     '%d image had its watermark regenerated.',
                     '%d images had their watermarks regenerated.',
                     $count,
-                    'free-watermarks'
+                    'aquamark'
                 ), number_format_i18n($count)))
             );
         }

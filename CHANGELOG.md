@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release of the Free Watermarks plugin.
+- Initial release of the AquaMark plugin.
 - Feature: Select watermark image from the WordPress Media Library.
 - Feature: Nine-point grid for watermark positioning.
 - Feature: Pixel (px) and percentage (%) based X/Y offsets.

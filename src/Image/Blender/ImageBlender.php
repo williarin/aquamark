@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Image\Blender;
+namespace Williarin\AquaMark\Image\Blender;
 
 use Imagine\Gd\Image as GdImage;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;
 use Psr\Container\ContainerInterface;
-use Williarin\FreeWatermarks\Image\Blender\PixelBlender\PixelBlenderInterface;
-use Williarin\FreeWatermarks\BlendModeEnum;
+use Williarin\AquaMark\Image\Blender\PixelBlender\PixelBlenderInterface;
+use Williarin\AquaMark\BlendModeEnum;
 
 final class ImageBlender implements BlenderInterface
 {

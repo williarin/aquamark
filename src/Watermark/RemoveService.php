@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Watermark;
+namespace Williarin\AquaMark\Watermark;
 
 final class RemoveService
 {
@@ -20,7 +20,7 @@ final class RemoveService
 
     public function addBulkAction(array $bulkActions): array
     {
-        $bulkActions['remove_watermarks'] = __('Remove Watermarks', 'free-watermarks');
+        $bulkActions['remove_watermarks'] = __('Remove Watermarks', 'aquamark');
         return $bulkActions;
     }
 
@@ -78,7 +78,7 @@ final class RemoveService
                     '%d image had its watermark removed.',
                     '%d images had their watermarks removed.',
                     $count,
-                    'free-watermarks'
+                    'aquamark'
                 ), number_format_i18n($count)))
             );
         }

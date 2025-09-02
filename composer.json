@@ -7,7 +7,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Williarin\\FreeWatermarks\\": "src/"
+            "Williarin\\AquaMark\\": "src/"
         }
     },
     "require-dev": {
@@ -17,7 +17,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Williarin\\FreeWatermarks\\Tests\\": "tests/"
+            "Williarin\\AquaMark\\Tests\\": "tests/"
         }
     },
     "scripts": {

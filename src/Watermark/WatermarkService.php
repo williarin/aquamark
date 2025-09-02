@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks\Watermark;
+namespace Williarin\AquaMark\Watermark;
 
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
-use Williarin\FreeWatermarks\Admin\SettingsPage;
-use Williarin\FreeWatermarks\Image\Blender\BlenderInterface;
-use Williarin\FreeWatermarks\Settings\Settings;
+use Williarin\AquaMark\Admin\SettingsPage;
+use Williarin\AquaMark\Image\Blender\BlenderInterface;
+use Williarin\AquaMark\Settings\Settings;
 
 final class WatermarkService
 {
@@ -35,7 +35,7 @@ final class WatermarkService
          * @param Settings $settings The settings object.
          * @param int $attachmentId The ID of the attachment being processed.
          */
-        $settings = apply_filters('free_watermarks_settings', $baseSettings, $attachmentId);
+        $settings = apply_filters('aquamark_settings', $baseSettings, $attachmentId);
 
         // Prevent the watermark image itself from being watermarked
         if ($attachmentId === $settings->watermarkImageId) {
@@ -61,7 +61,7 @@ final class WatermarkService
              * @param ImageInterface $watermark The Imagine image object for the watermark.
              * @param Settings $settings The settings object.
              */
-            $watermark = apply_filters('free_watermarks_watermark_image', $watermarkBase, $settings);
+            $watermark = apply_filters('aquamark_watermark_image', $watermarkBase, $settings);
 
             $this->applyOpacity($watermark, $settings->opacity);
 
@@ -83,7 +83,7 @@ final class WatermarkService
                  * @param ImageInterface $resizedWatermark The resized watermark.
                  * @param Settings $settings The settings object.
                  */
-                $position = apply_filters('free_watermarks_position', $basePosition, $image, $resizedWatermark, $settings);
+                $position = apply_filters('aquamark_position', $basePosition, $image, $resizedWatermark, $settings);
 
                 /**
                  * Action before the watermark is applied.
@@ -91,7 +91,7 @@ final class WatermarkService
                  * @param ImageInterface $resizedWatermark The resized watermark.
                  * @param Settings $settings The settings object.
                  */
-                do_action('free_watermarks_before_apply', $image, $resizedWatermark, $settings);
+                do_action('aquamark_before_apply', $image, $resizedWatermark, $settings);
 
                 $this->blender->blend($settings->blendMode, $image, $resizedWatermark, $position, $settings->opacity);
 
@@ -102,7 +102,7 @@ final class WatermarkService
                  * @param ImageInterface $image The modified image.
                  * @param Settings $settings The settings object.
                  */
-                do_action('free_watermarks_after_apply', $image, $settings);
+                do_action('aquamark_after_apply', $image, $settings);
             }
         } catch (\Exception $e) {
             

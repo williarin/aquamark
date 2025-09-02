@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Williarin\FreeWatermarks;
+namespace Williarin\AquaMark;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Williarin\FreeWatermarks\Admin\SettingsPage;
-use Williarin\FreeWatermarks\Watermark\RegenerateService;
-use Williarin\FreeWatermarks\Watermark\RemoveService;
-use Williarin\FreeWatermarks\Watermark\WatermarkService;
+use Williarin\AquaMark\Admin\SettingsPage;
+use Williarin\AquaMark\Watermark\RegenerateService;
+use Williarin\AquaMark\Watermark\RemoveService;
+use Williarin\AquaMark\Watermark\WatermarkService;
 
 final class Plugin
 {
@@ -43,8 +43,8 @@ final class Plugin
     {
         $settingsLink = sprintf(
             '<a href="%s">%s</a>',
-            admin_url('admin.php?page=free-watermarks'),
-            __('Settings', 'free-watermarks')
+            admin_url('admin.php?page=aquamark'),
+            __('Settings', 'aquamark')
         );
 
         array_unshift($links, $settingsLink);
