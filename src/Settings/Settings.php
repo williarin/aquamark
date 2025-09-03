@@ -7,20 +7,20 @@ namespace Williarin\AquaMark\Settings;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Williarin\AquaMark\BlendModeEnum;
 
-final readonly class Settings
+final class Settings
 {
-    public int $watermarkImageId;
-    public string $position;
-    public int $offsetX;
-    public int $offsetY;
-    public string $offsetUnit;
-    public int $width;
-    public int $height;
-    public string $sizeUnit;
-    public int $opacity;
-    public string $blendMode;
-    public array $imageSizes;
-    public string $driver;
+    public readonly int $watermarkImageId;
+    public readonly string $position;
+    public readonly int $offsetX;
+    public readonly int $offsetY;
+    public readonly string $offsetUnit;
+    public readonly int $width;
+    public readonly int $height;
+    public readonly string $sizeUnit;
+    public readonly int $opacity;
+    public readonly string $blendMode;
+    public readonly array $imageSizes;
+    public readonly string $driver;
 
     public function __construct(array $options)
     {
