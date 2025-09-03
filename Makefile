@@ -36,7 +36,7 @@ build: clean
 	@echo "--> Ensuring no dev dependencies are present after adding Jetpack Autoloader..."
 	cd $(BUILD_DIR)/$(PLUGIN_NAME) && composer update --no-dev --no-interaction --optimize-autoloader
 	@echo "--> Creating production zip file: $(ZIP_FILE)..."
-	rm $(BUILD_DIR)/$(PLUGIN_NAME)/composer.lock $(BUILD_DIR)/$(PLUGIN_NAME)/assets/*.jpg
+	rm $(BUILD_DIR)/$(PLUGIN_NAME)/composer.lock
 	cd $(BUILD_DIR) && zip -r ../$(ZIP_FILE) $(PLUGIN_NAME)
 	@echo ""
 	@echo "--> Build complete: $(ZIP_FILE) created."
