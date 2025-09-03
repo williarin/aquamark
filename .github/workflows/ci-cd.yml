@@ -70,14 +70,12 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: [test]
-    # Add permissions for writing contents and creating tags
     permissions:
       contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Fetch all history for all tags to find the latest one
           fetch-depth: 0
 
       - name: Get latest WordPress version
@@ -114,8 +112,8 @@ jobs:
         uses: anothrNick/github-tag-action@1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true # Prefixes the tag with 'v'
-          DEFAULT_BUMP: patch # Increments the patch version (e.g., 1.2.3 -> 1.2.4)
+          TAG_PREFIX: v
+          DEFAULT_BUMP: patch
 
       - name: Log new tag
         if: steps.commit.outputs.changes_detected == 'true'
@@ -126,7 +124,7 @@ jobs:
         run: echo "WordPress 'Tested up to' version is already up to date."
 
   release:
-    name: Create Release
+    name: Create Release and Build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: [test]
@@ -135,6 +133,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       - name: Build plugin
         run: make build
@@ -153,7 +165,7 @@ jobs:
           version: ${{ steps.get_version.outputs.version }}
           changelog_path: 'CHANGELOG.md'
 
-      - name: Create GitHub Release and Upload Artifact
+      - name: Create GitHub Release and Upload Zip
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -161,24 +173,36 @@ jobs:
           generateReleaseNotes: false
           artifacts: "aquamark.zip"
 
+      - name: Upload plugin zip for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: aquamark.zip
+
   deploy:
     name: WordPress Plugin Deploy
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: [release]
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build plugin
-        run: make build
+      - name: Download plugin zip
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-zip
+
+      - name: Unzip plugin artifact
+        run: unzip aquamark.zip
 
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-          SLUG : aquamark
-          BUILD_DIR: build/aquamark/
+          SLUG: aquamark
+          BUILD_DIR: aquamark/
+          ASSETS_DIR: ".wordpress-org"
