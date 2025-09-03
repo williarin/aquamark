@@ -172,11 +172,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Build plugin
+        run: make build
+
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
-          WPORG_USERNAME: ${{ secrets.WPORG_USERNAME }}
-          WPORG_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
-          WPORG_PLUGIN_SLUG: aquamark
-          BUILD_STEP: "make build"
-          ASSETS_DIR: ".wordpress-org"
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG : aquamark
+          BUILD_DIR: build/aquamark/
