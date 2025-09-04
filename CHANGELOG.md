@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Feature: Warning when applying watermark to the destructive 'full' size.
 - Feature: "Regenerate Watermarks" bulk action in the Media Library to apply new settings or remove watermarks.
 - Feature: Developer hooks (`actions` and `filters`) for programmatic customization.
-- Architecture: Modern OOP using PHP 8.2, PSR-4 autoloading, and a Dependency Injection container.
+- Architecture: Modern OOP using PHP 8.1, PSR-4 autoloading, and a Dependency Injection container.
 - Architecture: Scoped dependencies via `php-scoper` to prevent plugin conflicts.
 - Development: `Makefile` for simplified build and release process.
 - Testing: Unit and integration test suite for core features.

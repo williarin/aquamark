@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['8.2', '8.3']
-        wordpress: ['latest', '6.8', '6.7']
+        php: ['8.1', '8.3']
+        wordpress: ['latest', '6.6', '6.5']
         include:
-          - php: '8.2'
+          - php: '8.1'
             wordpress: 'minimum'
             WP_VERSION: '6.0'
 
@@ -98,30 +98,62 @@ jobs:
           sed -i "s/Tested up to: .*/Tested up to: ${{ steps.wp_version.outputs.latest }}/" readme.txt
           echo "readme.txt updated to version ${{ steps.wp_version.outputs.latest }}"
 
-      - name: Commit changes if readme was updated
-        id: commit
+      - name: Bump patch version
         if: steps.wp_version.outputs.latest != steps.current_version.outputs.current
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: Update Tested up to version to ${{ steps.wp_version.outputs.latest }}"
-          file_pattern: readme.txt
-
-      - name: Bump patch version and push tag
-        if: steps.commit.outputs.changes_detected == 'true'
         id: tag_version
         uses: anothrNick/github-tag-action@1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_PREFIX: v
           DEFAULT_BUMP: patch
+          DRY_RUN: true # Get the new tag name without actually creating it yet
 
-      - name: Log new tag
-        if: steps.commit.outputs.changes_detected == 'true'
-        run: echo "Successfully created and pushed new tag ${{ steps.tag_version.outputs.new_tag }}"
+      - name: Update CHANGELOG.md
+        if: steps.wp_version.outputs.latest != steps.current_version.outputs.current
+        run: |
+          NEW_VERSION_NUMBER=$(echo "${{ steps.tag_version.outputs.new_tag }}" | sed 's/^v//')
+          TODAY=$(date +'%Y-%m-%d')
+          CHANGELOG_ENTRY="## [$NEW_VERSION_NUMBER] - $TODAY\n\n### Changed\n\n- Compatibility: Update 'Tested up to' version to ${{ steps.wp_version.outputs.latest }}.\n"
+          awk -v entry="$CHANGELOG_ENTRY" '
+            !done && /^## \[/ {
+              print entry;
+              done=1;
+            }
+            { print }
+          ' CHANGELOG.md > CHANGELOG.md.tmp && mv CHANGELOG.md.tmp CHANGELOG.md
+          echo "CHANGELOG.md updated for version $NEW_VERSION_NUMBER"
 
-      - name: Log no changes
-        if: steps.wp_version.outputs.latest == steps.current_version.outputs.current
-        run: echo "WordPress 'Tested up to' version is already up to date."
+      - name: Update readme.txt changelog
+        if: steps.wp_version.outputs.latest != steps.current_version.outputs.current
+        run: |
+          NEW_VERSION_NUMBER=$(echo "${{ steps.tag_version.outputs.new_tag }}" | sed 's/^v//')
+          README_ENTRY="= $NEW_VERSION_NUMBER =\n* Compatibility: Update 'Tested up to' version to ${{ steps.wp_version.outputs.latest }}.\n"
+          awk -v entry="$README_ENTRY" '
+            !done && /^== Changelog ==/ {
+              print;
+              print "";
+              printf entry;
+              done=1;
+              next;
+            }
+            { print }
+          ' readme.txt > readme.txt.tmp && mv readme.txt.tmp readme.txt
+          echo "readme.txt changelog updated for version $NEW_VERSION_NUMBER"
+
+      - name: Commit changes
+        if: steps.wp_version.outputs.latest != steps.current_version.outputs.current
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: Update Tested up to version to ${{ steps.wp_version.outputs.latest }} and update changelog"
+          file_pattern: "readme.txt CHANGELOG.md"
+
+      - name: Push new tag
+        if: steps.wp_version.outputs.latest != steps.current_version.outputs.current
+        uses: anothrNick/github-tag-action@1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: v
+          DEFAULT_BUMP: patch
 
   release:
     name: Create Release and Build
@@ -137,7 +169,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.1'
           coverage: none
 
       - name: Cache Composer dependencies
